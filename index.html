@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Techscriptor</title>
+<style type="text/css" media="screen">
+    #editor { 
+        position: absolute;
+        top: 0;
+        right: 50%;
+        bottom: 0;
+        left: 0;
+    }
+    #mdview { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 50%;
+        background-color: #F4F7F9;
+        padding: 15px;
+    }
+</style>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+</head>
+<body>
+
+<div id="editor">
+# Built for Technical Writing
+
+Techscriptor is a free Markdown editor that helps you write technical articles.
+
+## This is a heading
+
+The following is a list:
+* first item
+* second item
+
+Let's take a look at this code snippet:
+```python
+print("Hello world!")
+```
+
+</div>
+
+<div id="mdview"></div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/ace.min.js" integrity="sha512-LsPG7HaqMY141NrHpwkr7NyZ1Ede5kqiyyxynjCIh0y593ucZeNNZ1ViO++TJAVusvsh6ZGkE8Vd/5WEp5TGvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/mode-markdown.min.js" integrity="sha512-iYsFt92n+888KkIWz9rMd1EVL/sI/dzH26ESth7p1N2JoRCMSE7Zgiuev34j1Knd7vyizT4RCu1e456c2YxLwg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js" integrity="sha512-SYfDUYPg5xspsG6OOpXU366G8SZsdHOhqk/icdrYJ2E/WKZxPxze7d2HD3AyXpT7U22PZ5y74xRpqZ6A2bJ+kQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/chrome"); //chrome,twilight
+    editor.session.setMode("ace/mode/markdown");
+    editor.setOptions({
+        fontSize: 18,
+        hScrollBarAlwaysVisible: true,
+        vScrollBarAlwaysVisible: true
+    });
+    var md = window.markdownit();
+    function updateView() {
+        document.getElementById('mdview').innerHTML = md.render(editor.getValue());
+    }
+    updateView();
+    editor.session.on('change', function(delta) {updateView();});
+</script>
+
+</body>
+</html>
+
