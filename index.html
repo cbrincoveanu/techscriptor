@@ -1,36 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Techscriptor</title>
-<style type="text/css" media="screen">
-    #editor { 
-        position: absolute;
-        top: 0;
-        right: 50%;
-        bottom: 0;
-        left: 0;
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Techscriptor</title>
+    <style type="text/css" media="screen">
+    html, body {
+      height: 100%;
     }
-    #mdview { 
+    #editor {
         position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
-        left: 50%;
-        background-color: #F4F7F9;
-        padding: 15px;
+        left: 0;
     }
-</style>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    </style>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 </head>
 <body>
-
-<div id="editor">
-# Built for Technical Writing
+<div class="container-fluid h-100">
+  <div class="row h-100">
+      <div class="col h-100" style="position: relative;">
+          <div id="editor"># Built for Technical Writing
 
 _Techscriptor_ is a **free online Markdown editor** that helps you write
 clear documentation and technical articles.
@@ -41,23 +36,24 @@ will get lost trying to understand it and then you should consider splitting it
 up.
 
 </div>
+      </div>
+      <div class="col overflow-scroll h-100" style="background-color: #fafaff;" id="mdview"></div>
+  </div>
+</div>
 
-<div class="overflow-scroll" id="mdview"></div>
-    
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/ace.min.js" integrity="sha512-LsPG7HaqMY141NrHpwkr7NyZ1Ede5kqiyyxynjCIh0y593ucZeNNZ1ViO++TJAVusvsh6ZGkE8Vd/5WEp5TGvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/theme-chrome.min.js" integrity="sha512-IoW2AJDFMQYyoy2/RXHXuejhOyYdER5cWEa5daKogz7AS2xou/WCCpghsgBDZG3/V4VCDuJw2RvVhUW81bhlDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/theme-twilight.min.js" integrity="sha512-72aFN8YKWn7TNB0ZfHKTYnEmCQyAEtyB+X48j37Z9WEGdSgZIIFzmAC6kM5d1+gVzWA22GcNN380FN4yo80cJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/mode-markdown.min.js" integrity="sha512-iYsFt92n+888KkIWz9rMd1EVL/sI/dzH26ESth7p1N2JoRCMSE7Zgiuev34j1Knd7vyizT4RCu1e456c2YxLwg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js" integrity="sha512-SYfDUYPg5xspsG6OOpXU366G8SZsdHOhqk/icdrYJ2E/WKZxPxze7d2HD3AyXpT7U22PZ5y74xRpqZ6A2bJ+kQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 <script>
     var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/chrome"); //chrome,twilight
+    editor.setTheme("ace/theme/chrome");
     editor.session.setMode("ace/mode/markdown");
     editor.setOptions({
-        fontSize: 15,
-        hScrollBarAlwaysVisible: true,
-        vScrollBarAlwaysVisible: true
+        fontSize: 14,
+        vScrollBarAlwaysVisible: true,
+        wrap: true
     });
     function loadPopovers() {
         var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
