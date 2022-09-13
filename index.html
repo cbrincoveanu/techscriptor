@@ -73,6 +73,10 @@ up.
         return "<span style=\"background: " + color + ";\" tabindex=\"0\" data-bs-toggle=\"popover\" data-bs-trigger=\"focus\" data-bs-placement=\"top\" data-bs-content=\"" + message + "\">" + text + "</span>";
     }
     var md = window.markdownit();
+    const beforeUnloadListener = (event) => {
+      event.preventDefault();
+      return event.returnValue = "Are you sure you want to exit?";
+    };
     function updateView() {
         htmlOutput = md.render(editor.getValue());
         const regexVeryHardToRead = /((\w+,\s+)|(\w+\s+)){20,}(\w+[\.|?|!])/g;
@@ -81,6 +85,7 @@ up.
         });
         document.getElementById('mdview').innerHTML = htmlOutput;
         loadPopovers();
+        addEventListener("beforeunload", beforeUnloadListener, {capture: true});
     }
     updateView();
     editor.session.on('change', function(delta) {updateView();});
