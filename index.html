@@ -70,7 +70,10 @@ up.
         });
     }
     function getPopover(text, message, color) {
-        return "<span style=\"background: " + color + ";\" tabindex=\"0\" data-bs-toggle=\"popover\" data-bs-trigger=\"focus\" data-bs-placement=\"top\" data-bs-content=\"" + message + "\">" + text + "</span>";
+        return "<span style=\"background: " + color +
+            ";\" tabindex=\"0\" data-bs-toggle=\"popover\" "+
+            "data-bs-trigger=\"focus\" data-bs-placement=\"top\" "+
+            "data-bs-content=\"" + message + "\">" + text + "</span>";
     }
     var md = window.markdownit();
     const beforeUnloadListener = (event) => {
@@ -79,9 +82,10 @@ up.
     };
     function updateView() {
         htmlOutput = md.render(editor.getValue());
-        const regexVeryHardToRead = /((\w+,\s+)|(\w+\s+)){20,}(\w+[\.|?|!])/g;
-        htmlOutput = htmlOutput.replaceAll(regexVeryHardToRead, function(match) {
-            return getPopover(match, "This sentence is hard to read. Consider splitting it up.", "#f0f0a0");
+        const regexHardToRead = /((\w+,\s+)|(\w+\s+)){20,}(\w+[\.|?|!])/g;
+        htmlOutput = htmlOutput.replaceAll(regexHardToRead, function(match) {
+            message = "This sentence is hard to read.";
+            return getPopover(match, message, "#f0f0a0");
         });
         document.getElementById('mdview').innerHTML = htmlOutput;
         loadPopovers();
