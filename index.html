@@ -23,6 +23,17 @@
         bottom: 0;
         left: 0;
     }
+    #mdview {
+    }
+    blockquote {
+      background: #f9f9f9;
+      border-left: 3px solid #ccc;
+      margin: 1.5em 10px;
+      padding: 0.5em 10px;
+    }
+    blockquote p {
+      display: inline-block;
+    }
     </style>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -34,19 +45,59 @@
 <div class="container-fluid h-100">
   <div class="row h-100">
       <div class="col h-100" style="position: relative;">
-          <div id="editor"># Built for Technical Writing
+<div id="editor"># Built for Technical Writing
 
 _Techscriptor_ is a free online Markdown editor that helps you write clear
-documentation and technical articles.
+documentation and technical articles. The app highlights lengthy, complex
+sentences and common errors.
 
-The app highlights lengthy, complex sentences and common errors. If you see a
-yellow highlight, your sentence is so dense and complicated that your readers
-will get lost trying to understand it and then you should consider splitting it
-up.
+---
+
+If you see a yellow highlight, your sentence is so dense and complicated that
+your readers will get lost trying to understand it and then you should consider
+splitting it up.
+
+The following pronouns cause the most confusion in technical documentation:
+
+* it
+* they, them, and their
+
+For example, in the following sentence, does **It** refer to Python or to C++?
+> Python is interpreted, while C++ is compiled. **It** has an almost cult-like
+> following.
+
+Consider two additional problem pronouns:
+* this
+* that
+
+For example, in the following ambiguous sentence, **This** could refer to the
+user ID, to running the process, or to all of these:
+
+> Running the process configures permissions and generates a user ID. **This**
+> lets users authenticate to the app.
+
+Use the active voice most of the time. If the passive voice is used, sentences
+tend to be more wordy and vague.
+
+Unfortunately, adjectives and adverbs sometimes make technical readers bark
+loudly and ferociously.
+
+Reduce imprecise, weak, or generic verbs, such as the following:
+* forms of _be_: is, are, am, was, were, etc.
+* occur
+* happen
+
+> This error message happens when...
+
+Sentences that start with **There is** or **There are** marry a generic noun to
+a generic verb. Generic weddings bore readers.
+
+> There is a variable called `met_trick` that stores the current accuracy.
+
 
 </div>
       </div>
-      <div class="col overflow-scroll h-100" style="background-color: #fafaff;" id="mdview"></div>
+      <div class="col overflow-scroll h-100" id="mdview"></div>
   </div>
 </div>
 
@@ -85,13 +136,45 @@ up.
       event.preventDefault();
       return event.returnValue = "Are you sure you want to exit?";
     };
+    function getReplacementString(i) {
+        return "[#r"+ i + "]";
+    }
     function updateView() {
         htmlOutput = md.render(editor.getValue());
-        const regexHardToRead = /((\w+,\s+)|(\w+\s+)){20,}(\w+[\.|?|!])/g;
-        htmlOutput = htmlOutput.replaceAll(regexHardToRead, function(match) {
-            message = "This sentence is hard to read.";
-            return getPopover(match, message, "#f0f0a0");
-        });
+        const replacements = [];
+        const rules = {
+            "hardToRead": {
+                "regex": /((\w+,\s+)|(\w+\s+)){20,}(\w+[\.|?|!])/g,
+                "message": "This sentence is hard to read.",
+                "color": "#f0f0a0"
+            },
+            "adverbs": {
+                "regex": /(\w+)ly/g,
+                "message": "<em>Adverb:</em> Use a forceful verb.",
+                "color": "#a0e0ff"
+            },
+            "passiveVoice": { // \b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(\s\w+(en|ed))(\W)
+                "regex": /\b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(.+(en|ed))([\s]|\.|\,)/g,
+                "message": "<em>Passive voice:</em> Use active voice.",
+                "color": "#a0f0a0"
+            },
+            "genericVerb": {
+                "regex": /\b(happen|occur)(s?)/g,
+                "message": "<em>Generic verb:</em> Use precise verbs.",
+                "color": "#a0a0f0"
+            }
+        }
+        for(var label in rules) {
+            rule = rules[label];
+            htmlOutput = htmlOutput.replaceAll(rule["regex"], function(match) {
+                replacements.push(getPopover(match, rule["message"], rule["color"]));
+                return getReplacementString(replacements.length - 1);
+            });
+        }
+        for (let i = 0; i < replacements.length; i++) {
+            htmlOutput = htmlOutput.replace(getReplacementString(i), replacements[i]);
+        }
+        htmlOutput = htmlOutput.replaceAll("<blockquote>", "<blockquote class=\"blockquote\">");
         document.getElementById('mdview').innerHTML = htmlOutput;
         loadPopovers();
         addEventListener("beforeunload", beforeUnloadListener, {capture: true});
