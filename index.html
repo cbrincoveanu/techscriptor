@@ -47,53 +47,22 @@
       <div class="col h-100" style="position: relative;">
 <div id="editor"># Built for Technical Writing
 
-_Techscriptor_ is a free online Markdown editor that helps you write clear
-documentation and technical articles. The app highlights lengthy, complex
-sentences and common errors.
+_Techscriptor_ is a free online Markdown editor that makes your writing clear.
 
 ---
 
-If you see a yellow highlight, your sentence is so dense and complicated that
-your readers will get lost trying to understand it and then you should consider
-splitting it up.
+## Highlighting Common Errors
+The app helps you avoid the following common errors:
 
-The following pronouns cause the most confusion in technical documentation:
-
-* it
-* they, them, and their
-
-For example, in the following sentence, does **It** refer to Python or to C++?
-> Python is interpreted, while C++ is compiled. **It** has an almost cult-like
-> following.
-
-Consider two additional problem pronouns:
-* this
-* that
-
-For example, in the following ambiguous sentence, **This** could refer to the
-user ID, to running the process, or to all of these:
-
-> Running the process configures permissions and generates a user ID. **This**
-> lets users authenticate to the app.
-
-Use the active voice most of the time. If the passive voice is used, sentences
-tend to be more wordy and vague.
-
-Unfortunately, adjectives and adverbs sometimes make technical readers bark
-loudly and ferociously.
-
-Reduce imprecise, weak, or generic verbs, such as the following:
-* forms of _be_: is, are, am, was, were, etc.
-* occur
-* happen
-
-> This error message happens when...
-
-Sentences that start with **There is** or **There are** marry a generic noun to
-a generic verb. Generic weddings bore readers.
-
-> There is a variable called `met_trick` that stores the current accuracy.
-
+* **Long sentences:** Make your sentences short and clear. If you see a yellow
+highlight, your sentence is so dense and complicated that your readers will get
+lost trying to understand it and then you should consider splitting it up.
+* **Passive voice:** Use the active voice most of the time. If the passive voice
+is used, sentences tend to be more wordy and vague.
+* **Generic words:** Reduce imprecise, weak, or generic words. There are
+sentences where it can happen that the reader finds them difficult to read.
+* **Adverbs:** Avoid adverbs if they add no significant meaning. Unfortunately,
+adverbs sometimes make technical readers bark loudly and ferociously.
 
 </div>
       </div>
@@ -148,6 +117,11 @@ a generic verb. Generic weddings bore readers.
                 "message": "This sentence is hard to read.",
                 "color": "#f0f0a0"
             },
+            "thereIsThereAre": {
+                "regex": /\bThere (is|are)\b/g,
+                "message": "<em>Generic:</em> Be precise.",
+                "color": "#f0a0f0"
+            },
             "adverbs": {
                 "regex": /(\w+)ly/g,
                 "message": "<em>Adverb:</em> Use a forceful verb.",
@@ -161,7 +135,7 @@ a generic verb. Generic weddings bore readers.
             "genericVerb": {
                 "regex": /\b(happen|occur)(s?)/g,
                 "message": "<em>Generic verb:</em> Use precise verbs.",
-                "color": "#a0a0f0"
+                "color": "#f0a0f0"
             }
         }
         for(var label in rules) {
