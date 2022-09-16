@@ -71,9 +71,16 @@ adverbs sometimes make technical readers bark loudly and ferociously.
 Techscriptor renders standard Markdown in the browser:
 
 * inline `code`
-* code blocks with syntax highlighting:
+* code blocks with syntax highlighting for many languages:
     ```python
-    print("Hello world.")
+    def F(n):
+        if n == 0 or n == 1:
+            return n
+        else:
+            return F(n - 1) + F(n - 2)
+
+    x = 7
+    print(f"F({x}) = {F(x)}")
     ```
 * footnotes[^1]
 
@@ -89,13 +96,13 @@ Techscriptor renders standard Markdown in the browser:
 
 * blockquotes:
     > Life is a long lesson in humility.
-    > -- James M. Barrie
-
+    > &mdash; James M. Barrie
 </div>
       </div>
       <div class="col h-100 overflow-auto" id="mdviewContainer">
-          <div class="bg-light rounded my-1 p-2 text-muted"><strong>Warnings: <span id="warnings">0</span></strong> | <strong>Sentences: </strong><span id="sentences">0</span> | <strong>Words: </strong><span id="words">0</span> | <strong>Characters: </strong><span id="characters">0</span></div>
-          <div id="mdview" class="rounded mt-2 p-2 bg-light text-dark"></div>
+          <div class="bg-light rounded my-2 p-2 text-muted"><strong>Warnings: <span id="warnings">0</span></strong> | <strong>Sentences: </strong><span id="sentences">0</span> | <strong>Words: </strong><span id="words">0</span> | <strong>Characters: </strong><span id="characters">0</span></div>
+          <div id="mdview" class="rounded my-2 p-2 bg-light text-dark"></div>
+          <div id="mdviewSummary"></div>
           <p class="text-end">
               <a href="https://www.techscriptor.com" target="_blank"><img src="favicon-16x16.png" title="Techscriptor" alt="Techscriptor"></a>
               <small class="text-muted"> v1.0.0 by <a href="https://github.com/cbrincoveanu" target="_blank">cbrincoveanu</a></small>
@@ -158,41 +165,67 @@ Techscriptor renders standard Markdown in the browser:
     }
     function updateView() {
         htmlOutput = md.render(editor.getValue());
-        const replacements = [];
+        var replacements = [];
         const rules = {
             "hardToRead": {
                 "regex": /((\w+,\s+)|(\w+\s+)){20,}(\w+[\.|?|!])/g,
                 "message": "This sentence is hard to read.",
-                "color": "#f0f0a0"
-            },
-            "thereIsThereAre": {
-                "regex": /\bThere (is|are)\b/g,
-                "message": "<em>Generic:</em> Be precise.",
-                "color": "#f0a0f0"
+                "color": "#f0f0a0",
+                "summary": " sentences are hard to read.",
+                "summarySingle": " sentence is hard to read."
             },
             "adverbs": {
                 "regex": /((\w+)ly)|sometimes|perhaps|maybe/g,
                 "message": "<em>Adverb:</em> Use a forceful verb.",
-                "color": "#a0e0ff"
+                "color": "#a0e0ff",
+                "summary": " adverbs.",
+                "summarySingle": " adverb."
             },
             "passiveVoice": { // \b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(\s\w+(en|ed))(\W)
                 "regex": /\b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(.+(en|ed))([\s]|\.|\,)/g,
                 "message": "<em>Passive voice:</em> Use active voice.",
-                "color": "#a0f0a0"
+                "color": "#a0f0a0",
+                "summary": " uses of passive voice.",
+                "summarySingle": " use of passive voice."
+            },
+            "thereIsThereAre": {
+                "regex": /\bThere (is|are)\b/g,
+                "message": "<em>Generic:</em> Be precise.",
+                "color": "#f0a0f0",
+                "summary": " uses of <em>There is</em>/<em>There are</em>.",
+                "summarySingle": " use of <em>There is</em>/<em>There are</em>."
             },
             "genericVerb": {
                 "regex": /\b(happen|occur)(s?)/g,
                 "message": "<em>Generic verb:</em> Use precise verbs.",
-                "color": "#f0a0f0"
+                "color": "#f0a0f0",
+                "summary": " uses of generic verbs.",
+                "summarySingle": " use of generic verbs."
             }
         }
+        var ruleReplacements = {}
         for(var label in rules) {
             rule = rules[label];
+            ruleReplacements[label] = 0;
             htmlOutput = htmlOutput.replaceAll(rule["regex"], function(match) {
                 replacements.push(getPopover(match, rule["message"], rule["color"]));
+                ruleReplacements[label]++;
                 return getReplacementString(replacements.length - 1);
             });
         }
+        console.log(ruleReplacements);
+        rulesSummary = "";
+        for(var label in rules) {
+            var s = rules[label]["summary"];
+            if (ruleReplacements[label] == 1) {
+                s = rules[label]["summarySingle"];
+            }
+            rulesSummary += "<div class=\"rounded m-1 p-1 d-inline-block\" style=\"background: "+
+                rules[label]["color"] + ";\"><span class=\"badge bg-secondary\">" +
+                ruleReplacements[label] + "</span>" +
+                s + "</div>";
+        }
+        document.getElementById('mdviewSummary').innerHTML = rulesSummary;
         for (let i = 0; i < replacements.length; i++) {
             htmlOutput = htmlOutput.replace(getReplacementString(i), replacements[i]);
         }
