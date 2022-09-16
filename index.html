@@ -12,33 +12,7 @@
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Techscriptor</title>
-    <style type="text/css" media="screen">
-    html, body {
-      height: 100%;
-    }
-    #editor {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-    }
-    #mdviewContainer {
-        background: #f1f1ff;
-    }
-    #mdview {
-        padding: 20px;
-    }
-    blockquote {
-      background: #f9f9f9;
-      border-left: 3px solid #ccc;
-      margin: 1.5em 10px;
-      padding: 0.5em 10px;
-    }
-    blockquote p {
-      display: inline-block;
-    }
-    </style>
+    <link rel="stylesheet" href="css/ts.css">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -110,7 +84,6 @@ Techscriptor renders Markdown in the browser:
       </div>
   </div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/ace.min.js" integrity="sha512-LsPG7HaqMY141NrHpwkr7NyZ1Ede5kqiyyxynjCIh0y593ucZeNNZ1ViO++TJAVusvsh6ZGkE8Vd/5WEp5TGvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/theme-chrome.min.js" integrity="sha512-IoW2AJDFMQYyoy2/RXHXuejhOyYdER5cWEa5daKogz7AS2xou/WCCpghsgBDZG3/V4VCDuJw2RvVhUW81bhlDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/mode-markdown.min.js" integrity="sha512-iYsFt92n+888KkIWz9rMd1EVL/sI/dzH26ESth7p1N2JoRCMSE7Zgiuev34j1Knd7vyizT4RCu1e456c2YxLwg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -119,146 +92,6 @@ Techscriptor renders Markdown in the browser:
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js" integrity="sha512-gU7kztaQEl7SHJyraPfZLQCNnrKdaQi5ndOyt4L4UPL/FHDd/uB9Je6KDARIqwnNNE27hnqoWLBq+Kpe4iHfeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it-footnote/3.0.3/markdown-it-footnote.min.js" integrity="sha512-hKiRGx002Z2n8LGMKRResAVuZkDwZ9/7CdrbZbIldJyZ6MtKHHCzt6v8Inn1nFOsANUmx/avKIkc6O5MGEDP4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
-<script>
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/chrome");
-    editor.session.setMode("ace/mode/markdown");
-    editor.setOptions({
-        fontSize: 14,
-        vScrollBarAlwaysVisible: true,
-        wrap: true
-    });
-    function loadPopovers() {
-        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-        // console.log(popoverTriggerList);
-        var popoverList = popoverTriggerList.map(function(element){
-            return new bootstrap.Popover(element, {
-              trigger: 'hover focus',
-              html: true
-            });
-        });
-    }
-    function getPopover(text, message, color) {
-        return "<span style=\"background: " + color +
-            ";\" tabindex=\"0\" data-bs-toggle=\"popover\" "+
-            "data-bs-trigger=\"focus\" data-bs-placement=\"top\" "+
-            "data-bs-content=\"" + message + "\">" + text + "</span>";
-    }
-    var md = window.markdownit().use(window.markdownitFootnote);
-    const beforeUnloadListener = (event) => {
-      event.preventDefault();
-      return event.returnValue = "Are you sure you want to exit?";
-    };
-    function getReplacementString(i) {
-        return "[#r"+ i + "]";
-    }
-    function countWords(str) {
-      const arr = str.split(' ');
-      return arr.filter(word => word !== '').length;
-    }
-    function countSentences(str) {
-        s = str.match(/[\w|\)][.?!](\s|$)/g);
-        if (s == null) {
-            return 0;
-        }
-        return s.length;
-    }
-    function updateView() {
-        htmlOutput = md.render(editor.getValue());
-        var replacements = [];
-        const rules = {
-            "hardToRead": {
-                "regex": /((\w+,\s+)|(\w+\s+)){20,}(\w+[\.|?|!])/g,
-                "message": "This sentence is hard to read.",
-                "color": "#f0f0a0",
-                "summary": " sentences are hard to read.",
-                "summarySingle": " sentence is hard to read."
-            },
-            "adverbs": {
-                "regex": /((\w+)ly)|sometimes|perhaps|maybe/g,
-                "message": "<em>Adverb:</em> Use a forceful verb.",
-                "color": "#a0e0ff",
-                "summary": " adverbs.",
-                "summarySingle": " adverb."
-            },
-            "passiveVoice": { // \b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(\s\w+(en|ed))(\W)
-                "regex": /\b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(.+(en|ed))([\s]|\.|\,)/g,
-                "message": "<em>Passive voice:</em> Use active voice.",
-                "color": "#a0f0a0",
-                "summary": " uses of passive voice.",
-                "summarySingle": " use of passive voice."
-            },
-            "thereIsThereAre": {
-                "regex": /\bThere (is|are)\b/g,
-                "message": "<em>Generic:</em> Be precise.",
-                "color": "#f0a0f0",
-                "summary": " uses of <em>There is</em>/<em>There are</em>.",
-                "summarySingle": " use of <em>There is</em>/<em>There are</em>."
-            },
-            "genericVerb": {
-                "regex": /\b(happen|occur)(s?)/g,
-                "message": "<em>Generic verb:</em> Use precise verbs.",
-                "color": "#f0a0f0",
-                "summary": " uses of generic verbs.",
-                "summarySingle": " use of generic verbs."
-            }
-        }
-        var ruleReplacements = {}
-        for(var label in rules) {
-            rule = rules[label];
-            ruleReplacements[label] = 0;
-            htmlOutput = htmlOutput.replaceAll(rule["regex"], function(match) {
-                replacements.push(getPopover(match, rule["message"], rule["color"]));
-                ruleReplacements[label]++;
-                return getReplacementString(replacements.length - 1);
-            });
-        }
-        console.log(ruleReplacements);
-        rulesSummary = "";
-        for(var label in rules) {
-            var s = rules[label]["summary"];
-            if (ruleReplacements[label] == 1) {
-                s = rules[label]["summarySingle"];
-            }
-            rulesSummary += "<div class=\"rounded m-1 p-1 d-inline-block\" style=\"background: "+
-                rules[label]["color"] + ";\"><span class=\"badge bg-secondary\">" +
-                ruleReplacements[label] + "</span>" +
-                s + "</div>";
-        }
-        document.getElementById('mdviewSummary').innerHTML = rulesSummary;
-        for (let i = 0; i < replacements.length; i++) {
-            htmlOutput = htmlOutput.replace(getReplacementString(i), replacements[i]);
-        }
-        htmlOutput = htmlOutput.replaceAll("<blockquote>", "<blockquote class=\"blockquote\">");
-        htmlOutput = htmlOutput.replaceAll("<table>", "<table class=\"table table-bordered table-striped\">");
-        document.getElementById('mdview').innerHTML = htmlOutput;
-        outputWithoutHtml = htmlOutput.replace(/(<([^>]+)>)/ig, "");
-        sentences = countSentences(outputWithoutHtml);
-        words = countWords(outputWithoutHtml);
-        characters = outputWithoutHtml.length - 1;
-        if (characters < 0) {
-            characters = 0;
-        }
-        warnings = replacements.length;
-        document.getElementById('sentences').innerHTML = sentences;
-        document.getElementById('words').innerHTML = words;
-        document.getElementById('characters').innerHTML = characters;
-        document.getElementById('warnings').innerHTML = warnings;
-        warningsClass = "text-success";
-        if (warnings / words > 0.03) {
-            warningsClass = "text-warning";
-        }
-        if (warnings / words > 0.05) {
-            warningsClass = "text-danger";
-        }
-        document.getElementById('warnings').className = warningsClass;
-        loadPopovers();
-        hljs.highlightAll();
-        addEventListener("beforeunload", beforeUnloadListener, {capture: true});
-    }
-    updateView();
-    editor.session.on('change', function(delta) {updateView();});
-</script>
+<script src="/js/ts.min.js"></script>
 </body>
 </html>
-

@@ -1,0 +1,25 @@
+html, body {
+    height: 100%;
+}
+#editor {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+#mdviewContainer {
+    background: #f1f1ff;
+}
+#mdview {
+    padding: 20px;
+}
+blockquote {
+    background: #f9f9f9;
+    border-left: 3px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+}
+blockquote p {
+    display: inline-block;
+}
