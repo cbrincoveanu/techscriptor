@@ -2,6 +2,16 @@
 
 Markdown editor for technical writing.
 
+> ***Techscriptor*** is a Markdown editor that makes your writing precise and
+> clear.
+
+Techscriptor helps you avoid the following:
+
+* **Long sentences:** Make your sentences short and clear.
+* **Passive voice:** Use the active voice most of the time.
+* **Generic expressions:** Reduce imprecise, weak, or generic words.
+* **Adverbs:** Avoid adverbs if they add no significant meaning.
+
 ## Dependencies
 
 Techscriptor depends on the following (loaded from
