@@ -23,6 +23,9 @@
         bottom: 0;
         left: 0;
     }
+    #mdviewContainer {
+        background: #f1f1ff;
+    }
     #mdview {
         padding: 20px;
     }
@@ -48,7 +51,8 @@
       <div class="col h-100" style="position: relative;">
 <div id="editor"># Built for Technical Writing
 
-_Techscriptor_ is a free online Markdown editor that makes your writing clear.
+_Techscriptor_ is a free online Markdown editor that makes your writing precise
+and clear.
 
 ---
 
@@ -64,10 +68,16 @@ is used, sentences tend to be more wordy and vague.
 sentences where it can happen that the reader finds them difficult to read.
 * **Adverbs:** Avoid adverbs if they add no significant meaning. Unfortunately,
 adverbs sometimes make technical readers bark loudly and ferociously.
-
 </div>
       </div>
-      <div class="col overflow-auto h-100" id="mdview"></div>
+      <div class="col h-100 overflow-auto" id="mdviewContainer">
+          <div class="bg-light rounded my-1 p-2 text-muted"><strong>Warnings: <span id="warnings">0</span></strong> | <strong>Sentences: </strong><span id="sentences">0</span> | <strong>Words: </strong><span id="words">0</span> | <strong>Characters: </strong><span id="characters">0</span></div>
+          <div id="mdview" class="rounded mt-2 p-2 bg-light text-dark"></div>
+          <p class="text-end">
+              <a href="https://www.techscriptor.com" target="_blank"><img src="favicon-16x16.png" title="Techscriptor" alt="Techscriptor"></a>
+              <small class="text-muted"> v1.0.0 by <a href="https://github.com/cbrincoveanu" target="_blank">cbrincoveanu</a></small>
+          </p>
+      </div>
   </div>
 </div>
 
@@ -108,6 +118,17 @@ adverbs sometimes make technical readers bark loudly and ferociously.
     };
     function getReplacementString(i) {
         return "[#r"+ i + "]";
+    }
+    function countWords(str) {
+      const arr = str.split(' ');
+      return arr.filter(word => word !== '').length;
+    }
+    function countSentences(str) {
+        s = str.match(/[\w|\)][.?!](\s|$)/g);
+        if (s == null) {
+            return 0;
+        }
+        return s.length;
     }
     function updateView() {
         htmlOutput = md.render(editor.getValue());
@@ -151,6 +172,26 @@ adverbs sometimes make technical readers bark loudly and ferociously.
         }
         htmlOutput = htmlOutput.replaceAll("<blockquote>", "<blockquote class=\"blockquote\">");
         document.getElementById('mdview').innerHTML = htmlOutput;
+        outputWithoutHtml = htmlOutput.replace(/(<([^>]+)>)/ig, "");
+        sentences = countSentences(outputWithoutHtml);
+        words = countWords(outputWithoutHtml);
+        characters = outputWithoutHtml.length - 1;
+        if (characters < 0) {
+            characters = 0;
+        }
+        warnings = replacements.length;
+        document.getElementById('sentences').innerHTML = sentences;
+        document.getElementById('words').innerHTML = words;
+        document.getElementById('characters').innerHTML = characters;
+        document.getElementById('warnings').innerHTML = warnings;
+        warningsClass = "text-success";
+        if (warnings / words > 0.03) {
+            warningsClass = "text-warning";
+        }
+        if (warnings / words > 0.05) {
+            warningsClass = "text-danger";
+        }
+        document.getElementById('warnings').className = warningsClass;
         loadPopovers();
         addEventListener("beforeunload", beforeUnloadListener, {capture: true});
     }
