@@ -9,30 +9,30 @@ editor.setOptions({
 function loadPopovers() {
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
     // console.log(popoverTriggerList);
-    var popoverList = popoverTriggerList.map(function(element){
+    var popoverList = popoverTriggerList.map(function (element) {
         return new bootstrap.Popover(element, {
-          trigger: 'hover focus',
-          html: true
+            trigger: 'hover focus',
+            html: true
         });
     });
 }
 function getPopover(text, message, color) {
-    return "<span style=\"background: " + color +
-        ";\" tabindex=\"0\" data-bs-toggle=\"popover\" "+
-        "data-bs-trigger=\"focus\" data-bs-placement=\"top\" "+
-        "data-bs-content=\"" + message + "\">" + text + "</span>";
+    return `<span style="background: ${color};" tabindex="0" data-bs-toggle="popover"
+            data-bs-trigger="focus" data-bs-placement="top" data-bs-content="${message}">
+                ${text}
+            </span>`;
 }
 var md = window.markdownit().use(window.markdownitFootnote);
 const beforeUnloadListener = (event) => {
-  event.preventDefault();
-  return event.returnValue = "Are you sure you want to exit?";
+    event.preventDefault();
+    return event.returnValue = "Are you sure you want to exit?";
 };
 function getReplacementString(i) {
-    return "[#r"+ i + "]";
+    return "[#r" + i + "]";
 }
 function countWords(str) {
-  const arr = str.split(' ');
-  return arr.filter(word => word !== '').length;
+    const arr = str.split(' ');
+    return arr.filter(word => word !== '').length;
 }
 function countSentences(str) {
     s = str.match(/[\w|\)][.?!](\s|$)/g);
@@ -82,10 +82,10 @@ function updateView() {
         }
     }
     var ruleReplacements = {}
-    for(var label in rules) {
+    for (var label in rules) {
         rule = rules[label];
         ruleReplacements[label] = 0;
-        htmlOutput = htmlOutput.replaceAll(rule["regex"], function(match) {
+        htmlOutput = htmlOutput.replaceAll(rule["regex"], function (match) {
             replacements.push(getPopover(match, rule["message"], rule["color"]));
             ruleReplacements[label]++;
             return getReplacementString(replacements.length - 1);
@@ -93,22 +93,22 @@ function updateView() {
     }
     console.log(ruleReplacements);
     rulesSummary = "";
-    for(var label in rules) {
+    for (var label in rules) {
         var s = rules[label]["summary"];
         if (ruleReplacements[label] == 1) {
             s = rules[label]["summarySingle"];
         }
-        rulesSummary += "<div class=\"rounded m-1 p-1 d-inline-block\" style=\"background: "+
-            rules[label]["color"] + ";\"><span class=\"badge bg-secondary\">" +
-            ruleReplacements[label] + "</span>" +
-            s + "</div>";
+        rulesSummary += `<div class="rounded m-1 p-1 d-inline-block" style="background: ${rules[label]["color"]};">
+                            <span class="badge bg-secondary"> ${ruleReplacements[label]}</span>" 
+                            ${s}  
+                        </div>`;
     }
     document.getElementById('mdviewSummary').innerHTML = rulesSummary;
     for (let i = 0; i < replacements.length; i++) {
         htmlOutput = htmlOutput.replace(getReplacementString(i), replacements[i]);
     }
-    htmlOutput = htmlOutput.replaceAll("<blockquote>", "<blockquote class=\"blockquote\">");
-    htmlOutput = htmlOutput.replaceAll("<table>", "<table class=\"table table-bordered table-striped\">");
+    htmlOutput = htmlOutput.replaceAll("<blockquote>", `<blockquote class="blockquote">`);
+    htmlOutput = htmlOutput.replaceAll("<table>", `<table class="table table-bordered table-striped">`);
     document.getElementById('mdview').innerHTML = htmlOutput;
     outputWithoutHtml = htmlOutput.replace(/(<([^>]+)>)/ig, "");
     sentences = countSentences(outputWithoutHtml);
@@ -132,7 +132,7 @@ function updateView() {
     document.getElementById('warnings').className = warningsClass;
     loadPopovers();
     hljs.highlightAll();
-    addEventListener("beforeunload", beforeUnloadListener, {capture: true});
+    addEventListener("beforeunload", beforeUnloadListener, { capture: true });
 }
 updateView();
-editor.session.on('change', function(delta) {updateView();});
+editor.session.on('change', function (delta) { updateView(); });
