@@ -12,6 +12,8 @@ Techscriptor helps you avoid the following:
 * **Generic expressions:** Reduce imprecise, weak, or generic words.
 * **Adverbs:** Avoid adverbs if they add no significant meaning.
 
+A live demo is available here: https://www.techscriptor.com
+
 ## Dependencies
 
 Techscriptor depends on the following (loaded from
