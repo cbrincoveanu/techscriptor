@@ -59,8 +59,8 @@ function updateView() {
             "summary": " adverbs.",
             "summarySingle": " adverb."
         },
-        "passiveVoice": { // \b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(\s\w+(en|ed))(\W)
-            "regex": /\b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(.+(en|ed))([\s]|\.|\,)/g,
+        "passiveVoice": {
+            "regex": /\b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(\.|\,)?\s(\w+\s)?(\w+(en|ed))(\s|\.|\,)/g,
             "message": "<em>Passive voice:</em> Use active voice.",
             "color": "#a0f0a0",
             "summary": " uses of passive voice.",
