@@ -7,7 +7,7 @@
 
 Markdown editor for technical writing.
 
-![Preview](/preview.jpg)
+[![Preview](/preview.jpg)](https://www.techscriptor.com)
 
 > ***Techscriptor*** is a Markdown editor that makes your writing precise and
 > clear.
